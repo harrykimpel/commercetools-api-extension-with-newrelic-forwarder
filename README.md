@@ -1,1 +1,1 @@
-# commercetools-api-extension-with-newrelic-forwarder
+# commercetools API Extension with New Relic forwarder
