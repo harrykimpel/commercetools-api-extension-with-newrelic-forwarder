@@ -1,6 +1,7 @@
 var https = require('https');
 var url = require('url');
 var zlib = require('zlib');
+var uuid = require('uuid/v1');
 
 // Global constants
 const NR_INSERT_KEY = process.env.NR_INSERT_KEY;
@@ -15,7 +16,41 @@ module.exports = async function (context, req) {
         return acc + curr.quantity;
     }, 0);
 
-    if (itemsTotal <= 10) {
+    if (itemsTotal == 3) {
+        context.res = {
+            status: 400,
+            body: {
+                errors: [{
+                    code: "ReferenceExists",
+                    message: "Hello team, nice to meet you!"
+                }]
+            }
+        };
+    }
+    else if (itemsTotal == 4) {
+        //context.log('cart.lineItems[0]: ', JSON.stringify(cart.lineItems[0].id));
+        const uniqueId = uuid();
+        //context.log('uniqueId: '+uniqueId);
+        context.res = {
+            status: 200,
+            body: {
+                actions: [{
+                    action: 'setLineItemCustomType',
+                    "lineItemId": cart.lineItems[0].id,
+                    "type": {
+                        "typeId": "type",
+                        "key": "provider"
+                    },
+                    "fields": {
+                        "provider": "Lufthansa",
+                        "provider-status": "confirmed",
+                        "provider-booking-ref": uniqueId,
+                    },
+                }]
+            }
+        };
+    }
+    else if (itemsTotal <= 10) {
         context.res = {
             status: 200,
             body: undefined
